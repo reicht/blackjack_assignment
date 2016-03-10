@@ -67,7 +67,7 @@ class Game
     puts
   end
 
-  def show_scores
+  def show_scoreboard
     system('clear')
     line_bar
     puts @player.name
@@ -97,7 +97,7 @@ class Game
       @dealerhand.push @deck.deal
       @dealerscore += @dealerhand[-1].points
     end
-    show_scores
+    show_scoreboard
     puts "Dealer stands"
     evaluate_match
   end
