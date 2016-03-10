@@ -52,6 +52,7 @@ class Game
     @dealerhand.push @deck.deal
     @playerscore += @playerhand[-1].points
     @dealerscore += @dealerhand[-1].points
+    black_jack_check
   end
 
   def show_scores
@@ -82,7 +83,6 @@ class Game
   end
 
   def play_game
-
     puts
     puts "Would you like another card?"
     @continuance = get_response("(Y)es or (N)o")
@@ -110,11 +110,22 @@ class Game
     end
   end
 
+  def black_jack_check
+    if @playerhand[0].value == 14 && @playerhand[1].value == 11 || 12 || 13
+      puts "BLACKJACK!!  YOU WIN!!"
+    elsif @playerhand[1].value == 14 && @playerhand[0].value == 11 || 12 || 13
+      puts "BLACKJACK!!  YOU WIN!!"
+    end
+  end
+
+
+
   def line_bar(length = 20)
     puts "-" * length
   end
 
   def display_menu
+    system('clear')
     puts "Let's Play Blackjack!"
     puts "-" * 20
     puts "1 - Play a Game"
