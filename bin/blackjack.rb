@@ -1,3 +1,6 @@
+require_relative '../lib/card.rb'
+require_relative '../lib/deck.rb'
+
 class Game
   def initialize
 
@@ -69,8 +72,6 @@ class Game
     @dealerhand.push @deck.deal
     @playerscore += @playerhand[-1].points
     @dealerscore += @dealerhand[-1].points
-    @playerhand[0].value = 14
-    @playerhand[1].value = 12
     black_jack_check
     turn_cycle
 
@@ -172,7 +173,7 @@ class Game
 
   def dealer_turn
     show_scoreboard
-    puts "The Dealer show cards"
+    puts "The Dealer shows cards"
     interceptor
     while @dealerscore < 16
       @dealerhand.push @deck.deal
@@ -238,63 +239,63 @@ class Player
   end
 end
 
-class Card
-  attr_accessor :suit, :value
-  def initialize(suit, value)
-    @suit = suit
-    @value = value
-  end
+# class Card
+#   attr_accessor :suit, :value
+#   def initialize(suit, value)
+#     @suit = suit
+#     @value = value
+#   end
+#
+#   def points
+#     case @value
+#     when 11, 12, 13 then @points = 10
+#     when 14 then @points = 11
+#     else @points = @value
+#     end
+#   end
+#   def show_card
+#     print @suit.to_s + ": "
+#     case @value
+#     when 11
+#       @status = "J"
+#     when 12
+#       @status = "Q"
+#     when 13
+#       @status = "K"
+#     when 14
+#       @status = "A"
+#     else
+#       @status = @value
+#     end
+#     puts @status
+#   end
+# end
 
-  def points
-    case @value
-    when 11, 12, 13 then @points = 10
-    when 14 then @points = 11
-    else @points = @value
-    end
-  end
-  def show_card
-    print @suit.to_s + ": "
-    case @value
-    when 11
-      @status = "J"
-    when 12
-      @status = "Q"
-    when 13
-      @status = "K"
-    when 14
-      @status = "A"
-    else
-      @status = @value
-    end
-    puts @status
-  end
-end
-
-class Deck
-  attr_reader :cards
-  def initialize
-    @cards = []
-    suits = [:hearts, :diamonds, :spades, :clubs]
-    suits.each do |suit|
-      (2..14).each do |value|
-        @cards << Card.new(suit, value)
-      end
-    end
-    @cards
-  end
-
-  def show
-    @cards.each do |card|
-      puts card.value
-    end
-  end
-
-  def shuffle
-    @cards = @cards.shuffle
-  end
-  def deal
-    @cards.shift
-  end
-end
+# class Deck
+#   attr_reader :cards
+#   def initialize
+#     @cards = []
+#     suits = [:hearts, :diamonds, :spades, :clubs]
+#     suits.each do |suit|
+#       (2..14).each do |value|
+#         @cards << Card.new(suit, value)
+#       end
+#     end
+#     @cards
+#   end
+#
+#   def show
+#     @cards.each do |card|
+#       puts card.value
+#     end
+#   end
+#
+#   def shuffle
+#     @cards = @cards.shuffle
+#   end
+#   def deal
+#     @cards.shift
+#   end
+# end
 
 Game.new.start
