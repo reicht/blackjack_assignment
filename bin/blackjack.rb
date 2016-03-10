@@ -67,6 +67,20 @@ class Game
     puts
   end
 
+  def show_scores
+    system('clear')
+    line_bar
+    puts @player.name
+    @playerhand.each {|x| x.show_card}
+    puts @playerscore
+    line_bar
+    puts @dealer.name
+    @dealerhand.each {|x| x.show_card}
+    puts @dealerscore
+    line_bar
+    puts
+  end
+
   def play_game
 
     puts
@@ -85,10 +99,15 @@ class Game
     end
     show_scores
     puts "Dealer stands"
+    evaluate_match
   end
 
   def evaluate_match
-
+    if @playerscore >= @dealerscore || @dealerscore > 21
+      puts "Player Wins!"
+    else
+      puts "Dealer Wins"
+    end
   end
 
   def line_bar(length = 20)
@@ -100,7 +119,7 @@ class Game
     puts "-" * 20
     puts "1 - Play a Game"
     puts "2 - View the Stats(INACTIVE)"
-    puts "Q - Quit(DISABLED)"
+    puts "Q - Quit"
   end
 
   def get_response(prompt = "")
