@@ -4,42 +4,42 @@ class Game
   end
 
   def start
-    loop do
-      display_menu
-      response = get_response.to_i
-      if response == 1
-        @deck = Deck.new
-        @deck.shuffle
-        @player = Player.new("Player")
-        @dealer = Player.new("Dealer")
-        setup_game
-        loop do
-          show_scores
-          if @playerscore >21
-            puts "You have busted!"
-            exit
-          elsif @continuance.upcase =="Y"
-            play_game
-          elsif @continuance.upcase == "N"
-            puts "Standing"
-            dealer_turn
-            exit
-          else
-            puts "Invalid entry"
-            play_game
-          end
-        end
-      else
-        puts "Goodbye"
-        exit
-      end
+    puts "What's your name player?"
+    player = get_response("Name")
+    @player = Player.new(player)
+    @dealer = Player.new("Dealer")
+    display_menu
+  end
 
+  def display_menu
+    system('clear')
+    puts "Let's Play Blackjack!"
+    line_bar
+    puts "1 - Play a Game"
+    puts "2 - View the Stats(INACTIVE)"
+    puts "Q - Quit"
+    response = get_response.to_i
+    if response == 1
+      setup_game
+    elsif response == 2
+      show_tallies
+    else
+      exit
     end
+  end
 
+  def show_tallies
+    system('clear')
+    line_bar
+    puts @player.score
+    line_bar
+    puts @dealer.score
   end
 
   def setup_game
     @continuance = "y"
+    @deck = Deck.new
+    @deck.shuffle
     @playerhand = []
     @dealerhand = []
     @playerscore = 0
@@ -53,6 +53,41 @@ class Game
     @playerscore += @playerhand[-1].points
     @dealerscore += @dealerhand[-1].points
     black_jack_check
+    turn_cycle
+  end
+
+  def player_win
+    show_scoreboard
+    puts @player.name + " WINS!!!"
+    puts
+    puts "(P)lay again, (B)ack to Menu, or e(X)it?"
+    response = get_response
+    if response.upcase == "P"
+      setup_game
+    elsif response.upcase == "B"
+      display_menu
+    elsif response.upcase == "X"
+      exit
+    else
+      player_win
+    end
+  end
+
+  def dealer_win
+    show_scoreboard
+    puts @dealer.name + " WINS!!!"
+    puts
+    puts "(P)lay again, (B)ack to Menu, or e(X)it?"
+    response = get_response
+    if response.upcase == "P"
+      setup_game
+    elsif response.upcase == "B"
+      display_menu
+    elsif response.upcase == "X"
+      exit
+    else
+      dealer_win
+    end
   end
 
   def show_scores
@@ -82,7 +117,30 @@ class Game
     puts
   end
 
-  def play_game
+  def turn_cycle
+    loop do
+      show_scores
+      if @playerscore >21
+        puts "You have busted!"
+        puts "Enter anything to continue"
+        get_response
+        dealer_win
+      elsif @continuance.upcase =="Y"
+        player_hit
+      elsif @continuance.upcase == "N"
+        puts "Standing"
+        puts "Enter anything to continue"
+        get_response
+        dealer_turn
+        exit
+      else
+        puts "Invalid entry"
+        player_hit
+      end
+    end
+  end
+
+  def player_hit
     puts
     puts "Would you like another card?"
     @continuance = get_response("(Y)es or (N)o")
@@ -104,33 +162,22 @@ class Game
 
   def evaluate_match
     if @playerscore >= @dealerscore || @dealerscore > 21
-      puts "Player Wins!"
+      player_win
     else
-      puts "Dealer Wins"
+      dealer_win
     end
   end
 
   def black_jack_check
-    if @playerhand[0].value == 14 && @playerhand[1].value == 11 || 12 || 13
+    if (@playerhand[0].value == 14 && @playerhand[1].value == 11 || 12 || 13)
       puts "BLACKJACK!!  YOU WIN!!"
-    elsif @playerhand[1].value == 14 && @playerhand[0].value == 11 || 12 || 13
+    elsif (@playerhand[1].value == 14 && @playerhand[0].value == 11 || 12 || 13)
       puts "BLACKJACK!!  YOU WIN!!"
     end
   end
 
-
-
   def line_bar(length = 20)
     puts "-" * length
-  end
-
-  def display_menu
-    system('clear')
-    puts "Let's Play Blackjack!"
-    puts "-" * 20
-    puts "1 - Play a Game"
-    puts "2 - View the Stats(INACTIVE)"
-    puts "Q - Quit"
   end
 
   def get_response(prompt = "")
