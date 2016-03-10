@@ -13,11 +13,13 @@ class Game
 
   def display_menu
     system('clear')
+    line_bar
     puts "Let's Play Blackjack!"
     line_bar
     puts "1 - Play a Game"
-    puts "2 - View the Stats(INACTIVE)"
+    puts "2 - View the Stats(BETA)"
     puts "Q - Quit"
+    line_bar
     response = get_response.to_i
     if response == 1
       setup_game
@@ -31,9 +33,24 @@ class Game
   def show_tallies
     system('clear')
     line_bar
-    puts @player.score
+    print "Players Wins: "
+    puts @player.wins
     line_bar
-    puts @dealer.score
+    print "House Wins: "
+    puts @dealer.wins
+    line_bar
+    puts
+    puts "(P)lay again, (B)ack to Menu, or e(X)it?"
+    response = get_response
+    if response.upcase == "P"
+      setup_game
+    elsif response.upcase == "B"
+      display_menu
+    elsif response.upcase == "X"
+      exit
+    else
+      show_tallies
+    end
   end
 
   def setup_game
@@ -52,11 +69,11 @@ class Game
     @dealerhand.push @deck.deal
     @playerscore += @playerhand[-1].points
     @dealerscore += @dealerhand[-1].points
-    black_jack_check
     turn_cycle
   end
 
   def player_win
+    @player.wins += 1
     show_scoreboard
     puts @player.name + " WINS!!!"
     puts
@@ -74,6 +91,7 @@ class Game
   end
 
   def dealer_win
+    @dealer.wins += 1
     show_scoreboard
     puts @dealer.name + " WINS!!!"
     puts
@@ -187,7 +205,7 @@ class Game
 end
 
 class Player
-  attr_accessor :name, :score
+  attr_accessor :name, :wins
   def initialize(name)
     @name = name
     @wins = 0
