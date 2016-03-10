@@ -69,7 +69,11 @@ class Game
     @dealerhand.push @deck.deal
     @playerscore += @playerhand[-1].points
     @dealerscore += @dealerhand[-1].points
+    @playerhand[0].value = 14
+    @playerhand[1].value = 12
+    black_jack_check
     turn_cycle
+
   end
 
   def player_win
@@ -140,15 +144,13 @@ class Game
       show_scores
       if @playerscore >21
         puts "You have busted!"
-        puts "Enter anything to continue"
-        get_response
+        interceptor
         dealer_win
       elsif @continuance.upcase =="Y"
         player_hit
       elsif @continuance.upcase == "N"
         puts "Standing"
-        puts "Enter anything to continue"
-        get_response
+        interceptor
         dealer_turn
         exit
       else
@@ -169,9 +171,15 @@ class Game
   end
 
   def dealer_turn
+    show_scoreboard
+    puts "The Dealer show cards"
+    interceptor
     while @dealerscore < 16
       @dealerhand.push @deck.deal
       @dealerscore += @dealerhand[-1].points
+      show_scoreboard
+      puts "Standing"
+      interceptor
     end
     show_scoreboard
     puts "Dealer stands"
@@ -179,18 +187,32 @@ class Game
   end
 
   def evaluate_match
-    if @playerscore >= @dealerscore || @dealerscore > 21
+    if @playerscore > @dealerscore || @dealerscore > 21
       player_win
+    elsif @playerscore == @dealerscore
+     show_scoreboard
+     line_bar
+     puts "DRAW GAME!! EVERYONE'S A LOSER!!"
     else
       dealer_win
     end
   end
 
   def black_jack_check
-    if (@playerhand[0].value == 14 && @playerhand[1].value == 11 || 12 || 13)
+    if @playerhand[0].value == 14 && (@playerhand[1].value == 11 ||
+       @playerhand[1].value == 12 ||
+       @playerhand[1].value == 13)
+       show_scoreboard
       puts "BLACKJACK!!  YOU WIN!!"
-    elsif (@playerhand[1].value == 14 && @playerhand[0].value == 11 || 12 || 13)
+      interceptor
+      player_win
+    elsif @playerhand[1].value == 14 && (@playerhand[0].value == 11 ||
+      @playerhand[0].value == 12 ||
+      @playerhand[0].value == 13)
+      show_scoreboard
       puts "BLACKJACK!!  YOU WIN!!"
+      interceptor
+      player_win
     end
   end
 
@@ -201,6 +223,10 @@ class Game
   def get_response(prompt = "")
     print "#{prompt} > "
     gets.chomp
+  end
+  def interceptor
+    puts "Enter anything to continue"
+    get_response
   end
 end
 
